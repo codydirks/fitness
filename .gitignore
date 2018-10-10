@@ -1,0 +1,9 @@
+__pycache__/
+.gitsecret/keys/random_seed
+.ipynb_checkpoints/
+output/
+data/
+
+.DS_Store
+*.png
+api_keys.json
