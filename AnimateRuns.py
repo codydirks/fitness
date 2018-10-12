@@ -1,5 +1,4 @@
 import sys
-import time
 import requests
 
 import numpy as np
@@ -7,7 +6,6 @@ from math import log, exp, tan, atan, ceil
 
 from PIL import Image
 from io import BytesIO
-from IPython.display import clear_output
 
 #Matplotlib imports
 import matplotlib
@@ -21,7 +19,7 @@ with open('api_keys.json','r') as key_file:
     GOOGLE_MAPS_API_KEY,GOOGLE_MAPS_SECRET=[keys[i] for i in ('google-maps-api-key','google-maps-client-secret')]
     STRAVA_CLIENT_ID,STRAVA_CLIENT_SECRET,STRAVA_ACCESS_TOKEN=[keys[i]
                                                            for i in ('strava-client-id','strava-client-secret','strava-access-token')]
-API_URL = 'https://maps.googleapis.com/maps/api/staticmap?'
+GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/staticmap?'
 
 # Some constants
 
@@ -193,7 +191,7 @@ def get_maps_image(NW_lat_long, SE_lat_long, zoom=18,maptype='satellite',scale=1
             if GOOGLE_MAPS_API_KEY is not None:
                 urlparams['key'] = GOOGLE_MAPS_API_KEY
 
-            url=API_URL
+            url=GOOGLE_API_URL
             for key,val in urlparams.items():
                 url=url+key+'='+str(val)+'&'
             url=url[:-1]
@@ -310,7 +308,6 @@ writer = FFMpegWriter(fps=desired_fps, metadata=metadata)
 print('Plotting...')
 with writer.saving(fig, "output/script_test.mp4", 100):
     writer.grab_frame()
-    start=time.time()
 
     # Need to add a line object for each run, as well as the "header" points
     # at the front of each line
