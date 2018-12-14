@@ -3,6 +3,7 @@ import fitbit
 import gather_keys_oauth2 as Oauth2
 import datetime as dt
 import time
+import sys
 
 # For now, I'm storing data as the raw json that gets
 # retrieved through the API, and I'll figure out later
@@ -23,7 +24,10 @@ REFRESH_TOKEN = str(server.fitbit.client.session.token['refresh_token'])
 client = fitbit.Fitbit(CLIENT_ID, CLIENT_SECRET, oauth2=True, access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN)
 
 # Retrieve data for past x days
-x=30
+if len(sys.argv)==1:
+    x=30
+else:
+    x=int(sys.argv[1])
 days=[(((dt.datetime.now() - dt.timedelta(days=i)).strftime("%Y-%m-%d"))) for i in reversed(range(x))]
 
 #Retrieve HR and sleep data
@@ -47,14 +51,14 @@ all_jsons=json.loads(all_acts.content.decode('utf8'))
 
 for day in days:
     acts=[i for i in all_jsons['activities'] if i['startTime'].split('T')[0]==day]
-    
+
     # Once we isolate activities for this day, send requests for the detailed heart rate
     # data for each activity
     acts_json=[]
     for act in acts:
         acts_request=client.client.session.request('GET',act['heartRateLink'])
         acts_json.append(json.loads(acts_request.content.decode('utf-8')))
-    
+
     #Store the resulting day's worth of activities as a JSON list
     if len(acts_json)>0:
         act_file='data/activities/{:}_acts.json'.format(day)
